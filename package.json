@@ -1,0 +1,48 @@
+{
+  "name": "war2-fnt",
+  "version": "1.0.0",
+  "description": "Simple lib to handle .fnt files used in Warcraft 2",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "war2-fnt": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "typescript",
+    "library",
+    "warcraft 2"
+  ],
+  "author": "Rychellos",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rychellos/war2-fnt"
+  },
+  "bugs": {
+    "url": "https://github.com/rychellos/war2-fnt/issues"
+  },
+  "homepage": "https://github.com/rychellos/war2-fnt#readme",
+  "packageManager": "pnpm@10.7.1",
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "@types/yargs": "^17.0.35",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  },
+  "dependencies": {
+    "jimp": "^1.6.0",
+    "war2-fnt": "link:",
+    "yargs": "^18.0.0"
+  }
+}
