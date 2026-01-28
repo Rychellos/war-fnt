@@ -1,6 +1,6 @@
 {
   "name": "war2-fnt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple lib to handle .fnt files used in Warcraft 2",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
