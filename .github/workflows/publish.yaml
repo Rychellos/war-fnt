@@ -77,9 +77,21 @@ jobs:
       
       - name: Publish to NPM
         if: steps.check.outputs.version_changed == 'true'
-        run: npm publish --access public --no-git-checks
+        run: npm publish --access public --no-git-checks --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.version_changed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ steps.check.outputs.new_version }}"
+          name: "Release v${{ steps.check.outputs.new_version }}"
+          generate_release_notes: true
+          body: |
+            [View on npm](https://www.npmjs.com/package/war2-fnt/v/${{ steps.check.outputs.new_version }})
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag release
         if: steps.check.outputs.version_changed == 'true'
