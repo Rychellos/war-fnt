@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "type": "module",
   "files": [
     "dist"
   ],
@@ -15,12 +16,18 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "ci:publish": "pnpm build && pnpm changeset publish"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "keywords": [
     "typescript",
     "library",
-    "warcraft 2"
+    "warcraft 2",
+    "cli"
   ],
   "author": "Rychellos",
   "license": "MIT",

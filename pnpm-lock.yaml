@@ -11,9 +11,6 @@ importers:
       jimp:
         specifier: ^1.6.0
         version: 1.6.0
-      war2-fnt:
-        specifier: 'link:'
-        version: 'link:'
       yargs:
         specifier: ^18.0.0
         version: 18.0.0
