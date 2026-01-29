@@ -5,7 +5,7 @@ export class FontChar {
     private _data: Uint8Array;
 
     constructor(
-        public readonly charCode: number, // Read-only, no setter needed
+        public readonly charCode: number,
         private _width: number,
         private _height: number,
         public xOffset: number = 0,

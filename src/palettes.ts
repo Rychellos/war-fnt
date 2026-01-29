@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "node:fs";
+
 export interface RGBColor {
     r: number;
     g: number;
@@ -7,7 +9,6 @@ export interface RGBColor {
 
 /**
  * Helper to convert hex string to RGBColor.
- * Supports #RRGGBB and #RRGGBBAA.
  */
 function hex(hex: string): RGBColor {
     hex = hex.replace(/^#/, "");
@@ -42,7 +43,7 @@ export const PALETTES: Record<string, RGBColor[]> = {
         { r: 25, g: 25, b: 25, a: 255 },
         { r: 0, g: 0, b: 0, a: 255 },
     ],
-    DEFAULT: [
+    default: [
         "#00000000",
         "#9c9c9c",
         "#9c9c9c",
@@ -52,7 +53,7 @@ export const PALETTES: Record<string, RGBColor[]> = {
         "#00000000",
         "#00000000"
     ].map(hex),
-    GOLD: [
+    gold: [
         "#00000000",
         "#f4e020",
         "#d0c01c",
@@ -62,17 +63,17 @@ export const PALETTES: Record<string, RGBColor[]> = {
         "#00000000",
         "#00000000"
     ].map(hex),
-    RED: [
+    red: [
         "#00000000",
         "#fc0000",
         "#fc0000",
         "#b80000",
         "#b80000",
         "#000000",
-        "#ffffff", // Fixed short #fff to full #ffffff for parser
+        "#ffffff",
         "#ffffff",
     ].map(hex),
-    WHITE: [
+    white: [
         "#00000000",
         "#fcf8f0",
         "#fcf8f0",
@@ -84,14 +85,29 @@ export const PALETTES: Record<string, RGBColor[]> = {
     ].map(hex),
 };
 
-export const DEFAULT_PALETTE_NAME = "DEFAULT";
+export const DEFAULT_PALETTE_NAME = "default";
 
 /**
- * Gets a palette by name or returns the default one.
+ * Gets a palette by name, tries to load json file from the disk or returns the default one.
  */
-export function getPalette(name?: string): RGBColor[] {
-    if (name && PALETTES[name]) {
-        return PALETTES[name];
+export function getPalette(nameOrPath?: string): RGBColor[] {
+    if(!nameOrPath) {
+        return PALETTES[DEFAULT_PALETTE_NAME];
     }
+
+    if (PALETTES[nameOrPath.toLowerCase()]) {
+        return PALETTES[nameOrPath.toLowerCase()];
+    }
+
+    if(existsSync(nameOrPath) && nameOrPath.includes("json")) {
+        try {
+            return JSON.parse(readFileSync(nameOrPath, "utf-8"))
+        } catch (error) {
+            console.warn(error);
+
+            return PALETTES[DEFAULT_PALETTE_NAME];
+        }
+    }
+
     return PALETTES[DEFAULT_PALETTE_NAME];
 }

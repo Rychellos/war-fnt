@@ -16,7 +16,7 @@ export const builder = (y: Argv) => {
         })
         .option("palette", {
             alias: "p",
-            describe: "Path to JSON palette file",
+            describe: "Name of built-in palette or path to JSON file (array of {r,g,b,a})",
             type: "string",
             demandOption: true,
         })
@@ -34,6 +34,7 @@ export const handler = async (argv: Arguments<{ dir: string; palette: string; ou
     const outputPath = argv.output;
 
     const metaPath = path.join(dir, "metadata.json");
+
     if (!fs.existsSync(metaPath)) {
         console.error(`Metadata not found in ${dir}`);
         process.exit(1);
@@ -74,6 +75,7 @@ export const handler = async (argv: Arguments<{ dir: string; palette: string; ou
                                 Math.pow(b - p.b, 2) +
                                 Math.pow(a - p.a, 2)
                             );
+
                             if (dist < bestDist) {
                                 bestDist = dist;
                                 bestIdx = pid;
@@ -88,6 +90,7 @@ export const handler = async (argv: Arguments<{ dir: string; palette: string; ou
 
         const font = War2Font.fromGlyphs(fontChars, metadata.charSpacing || 1);
         const binary = font.write();
+        
         fs.writeFileSync(outputPath, binary);
         console.log(`Created: ${outputPath}`);
     } catch (err) {

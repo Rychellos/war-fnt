@@ -9,12 +9,12 @@ export const describe = "Render a string of text using a Blizzard .fnt file";
 export const builder = (y: Argv) => {
     return y
         .positional("file", {
-            describe: "Path to the .fnt file",
+            describe: "Path to the Blizzard .fnt file",
             type: "string",
             demandOption: true,
         })
         .positional("text", {
-            describe: 'Text to render. Can be a string or JSON array: \'[{"text": "Hi", "palette": "red"}]\'',
+            describe: 'Text to render. Can be a string or JSON array: \'[{"text": "Hello ", "palette": "red"}, {"text": "World", "palette": "red"}]\'',
             type: "string",
             demandOption: true,
         })
@@ -22,11 +22,11 @@ export const builder = (y: Argv) => {
             alias: "o",
             describe: "Output PNG file path",
             type: "string",
-            default: "render.png",
+            default: "out.png",
         })
         .option("palette", {
             alias: "p",
-            describe: "Default palette name or path to JSON",
+            describe: "Name of built-in palette or path to JSON file (array of {r,g,b,a})",
             type: "string",
         })
         .option("spacing", {
@@ -52,9 +52,11 @@ export const handler = async (argv: Arguments<{ file: string; text: string; outp
 
         let segments: { text: string; palette?: string }[] = [];
         const trimmedText = argv.text.trim();
+
         if (trimmedText.startsWith("[") || trimmedText.startsWith("{")) {
             try {
                 const parsed = JSON.parse(argv.text);
+
                 segments = Array.isArray(parsed) ? parsed : [parsed];
             } catch (e) {
                 segments = [{ text: argv.text, palette: argv.palette }];
@@ -63,16 +65,6 @@ export const handler = async (argv: Arguments<{ file: string; text: string; outp
             segments = [{ text: argv.text, palette: argv.palette }];
         }
 
-        // Helper to load palette
-        const loadPalette = (nameOrPath?: string) => {
-            if (!nameOrPath) return getPalette();
-            if (PALETTES[nameOrPath]) return PALETTES[nameOrPath];
-            if (fs.existsSync(nameOrPath)) {
-                return JSON.parse(fs.readFileSync(nameOrPath, "utf-8"));
-            }
-            return getPalette();
-        };
-
         // Calculate dimensions
         let totalWidth = 0;
         let maxHeight = font.getHeader().maxHeight;
@@ -80,7 +72,8 @@ export const handler = async (argv: Arguments<{ file: string; text: string; outp
         for (const segment of segments) {
             for (const char of segment.text) {
                 const code = char.charCodeAt(0);
-                const glyph = charMap.get(code) || charMap.get(32); // fallback to space
+
+                const glyph = charMap.get(code) || charMap.get(32);
                 if (glyph) {
                     totalWidth += glyph.width + argv.spacing;
                 }
@@ -96,18 +89,20 @@ export const handler = async (argv: Arguments<{ file: string; text: string; outp
         let cursorX = 0;
 
         for (const segment of segments) {
-            const lookup = loadPalette(segment.palette || argv.palette);
+            const lookup = getPalette(segment.palette || argv.palette);
 
             for (const char of segment.text) {
                 const code = char.charCodeAt(0);
                 const glyph = charMap.get(code) || charMap.get(32);
+
                 if (!glyph) continue;
 
                 // Draw glyph pixel-by-pixel
                 for (let py = 0; py < glyph.height; py++) {
                     for (let px = 0; px < glyph.width; px++) {
                         const palIdx = glyph.data[py * glyph.width + px];
-                        if (palIdx === 0) continue; // transparent
+
+                        if (palIdx === 0) continue;
 
                         const color = lookup[palIdx] || lookup[0];
                         const drawX = cursorX + px;
@@ -122,6 +117,7 @@ export const handler = async (argv: Arguments<{ file: string; text: string; outp
                         }
                     }
                 }
+
                 cursorX += glyph.width + argv.spacing;
             }
         }
@@ -129,7 +125,6 @@ export const handler = async (argv: Arguments<{ file: string; text: string; outp
         const outBuffer = await canvas.getBuffer("image/png");
         fs.writeFileSync(argv.output, outBuffer);
         console.log(`Rendered to: ${argv.output}`);
-
     } catch (err) {
         console.error(`Error rendering: ${(err as Error).message}`);
         process.exit(1);

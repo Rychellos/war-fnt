@@ -10,7 +10,7 @@ export const describe = "Extract each character into a separate PNG file";
 export const builder = (y: Argv) => {
     return y
         .positional("file", {
-            describe: "Path to the .fnt file",
+            describe: "Path to the Blizzard .fnt file",
             type: "string",
             demandOption: true,
         })
@@ -22,7 +22,7 @@ export const builder = (y: Argv) => {
         })
         .option("palette", {
             alias: "p",
-            describe: "Path to JSON palette file",
+            describe: "Name of built-in palette or path to JSON file (array of {r,g,b,a})",
             type: "string",
         });
 };
@@ -65,9 +65,11 @@ export const handler = async (argv: Arguments<{ file: string; output: string; pa
 
             if (char.width > 0 && char.height > 0) {
                 const colorData = new Uint8Array(4 * char.data.length);
+
                 for (let i = 0; i < char.data.length; i++) {
                     const idx = char.data[i];
                     const color = lookup[char.data[i]] || lookup[0];
+                    
                     colorData[i * 4] = color.r;
                     colorData[i * 4 + 1] = color.g;
                     colorData[i * 4 + 2] = color.b;

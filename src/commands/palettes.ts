@@ -10,10 +10,8 @@ export const builder = (y: Argv) => {
 
 export const handler = async () => {
     console.log("Available Palettes:");
-    console.log("-------------------");
+    
     for (const name of Object.keys(PALETTES)) {
         console.log(`- ${name}`);
     }
-    console.log("-------------------");
-    console.log("You can use these names with the --palette option.");
 };

@@ -33,7 +33,7 @@ export const builder = (y: Argv) => {
         })
         .option("palette", {
             alias: "p",
-            describe: "Path to JSON palette file",
+            describe: "Name of built-in palette or path to JSON file (array of {r,g,b,a})",
             type: "string",
         });
 };
