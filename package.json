@@ -1,7 +1,7 @@
 {
   "name": "war2-fnt",
-  "version": "1.0.6",
-  "description": "Simple lib designed to ease of manipulating .fnt files used in Warcraft 2.",
+  "version": "2.0.0",
+  "description": "Simple lib designed to ease of manipulating Blizzard .fnt files used in Warcraft 2.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -10,7 +10,7 @@
     "dist"
   ],
   "bin": {
-    "war2-fnt": "dist/cli.js"
+    "war2-fnt": "dist/war2-fnt.js"
   },
   "scripts": {
     "build": "tsup",
@@ -27,6 +27,7 @@
     "typescript",
     "library",
     "warcraft 2",
+    "warcraft II",
     "cli"
   ],
   "author": "Rychellos",

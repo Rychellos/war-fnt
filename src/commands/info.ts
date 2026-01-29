@@ -8,7 +8,7 @@ export const describe = "Show information about a Blizzard .fnt file";
 
 export const builder = (y: Argv) => {
     return y.positional("file", {
-        describe: "Path to the .fnt file",
+        describe: "Path to the Blizzad .fnt file",
         type: "string",
         demandOption: true,
     });
@@ -27,7 +27,7 @@ export const handler = async (argv: Arguments<{ file: string }>) => {
         const header = font.getHeader();
         const chars = font.getChars();
 
-        console.log(`\nFont Info: ${path.basename(filePath)}`);
+        console.log(`Font Info: ${path.basename(filePath)}`);
         console.log(`-----------------------------------`);
         console.log(`Max Height:     ${header.maxHeight}px`);
         console.log(`Glyph Count:    ${chars.length}`);
